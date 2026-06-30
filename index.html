@@ -2,311 +2,219 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Investimento (S&P 500)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // Ativa dark mode por classe
-    tailwind.config = { darkMode: 'class' };
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  
+  <title>Wealthiers - Premium Wealth Tracker</title>
+  
+  <!-- PWA & Apple Web App Tags -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wealthiers" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="theme-color" content="#09090b" />
+  
+  <!-- Google Fonts for Luxury Theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css?v=10" />
+  
+  <!-- Chart.js HD -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Application Logic -->
+  <script src="app.js?v=10" defer></script>
 </head>
+<body>
 
-<body class="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-  <div class="max-w-4xl mx-auto p-6">
-    <header class="mb-8 flex items-start justify-between gap-4">
-      <div>
-        <h1 class="text-3xl font-bold">Calculadora de Investimento</h1>
-        <p class="text-slate-600 dark:text-slate-300 mt-2">
-          Simula investir <b>Y</b>/mês durante <b>X</b> anos com crescimento anual médio de <b>Z</b>.
-          (Ex.: S&P 500)
-        </p>
-      </div>
+  <!-- Premium Top Sticky Bar -->
+  <header class="ios-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo-small">W</div>
+      <span class="brand-text">Wealthiers</span>
+    </div>
+    <button id="themeToggle" class="theme-btn">🌙 Escuro</button>
+  </header>
 
-      <button id="themeToggle"
-        class="shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50
-               dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 transition">
-        🌙 Dark
-      </button>
-    </header>
-
-    <div class="grid gap-6 md:grid-cols-2">
-      <!-- Inputs -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm
-                      dark:bg-slate-900/60 dark:border-slate-800">
-        <h2 class="text-xl font-semibold mb-4">Parâmetros</h2>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1" for="years">Anos (X)</label>
-            <input id="years" type="number" min="1" step="1" value="20"
-              class="w-full rounded-xl bg-white border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-300
-                     dark:bg-slate-950 dark:border-slate-800 dark:focus:ring-slate-500"/>
-          </div>
-
-          <div>
-            <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1" for="monthly">Investimento mensal (€) (Y)</label>
-            <input id="monthly" type="number" min="0" step="10" value="200"
-              class="w-full rounded-xl bg-white border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-300
-                     dark:bg-slate-950 dark:border-slate-800 dark:focus:ring-slate-500"/>
-          </div>
-
-          <div>
-            <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1" for="annualReturn">Aumento anual (%) (Z)</label>
-            <input id="annualReturn" type="number" step="0.1" value="8"
-              class="w-full rounded-xl bg-white border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-300
-                     dark:bg-slate-950 dark:border-slate-800 dark:focus:ring-slate-500"/>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Ex.: 8% é uma média histórica frequentemente usada como aproximação (não é garantia).
-            </p>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3 pt-2">
-            <button id="calcBtn"
-              class="rounded-xl bg-slate-900 text-white font-semibold px-4 py-2 hover:bg-slate-800 transition
-                     dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200">
-              Calcular
-            </button>
-            <button id="resetBtn"
-              class="rounded-xl border border-slate-200 px-4 py-2 hover:bg-slate-50 transition
-                     dark:border-slate-800 dark:hover:bg-slate-900">
-              Reset
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Outputs -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm
-                      dark:bg-slate-900/60 dark:border-slate-800">
-        <h2 class="text-xl font-semibold mb-4">Resultado</h2>
-
-        <div class="space-y-4">
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200
-                      dark:bg-slate-950 dark:border-slate-800">
-            <div class="text-sm text-slate-600 dark:text-slate-300">Valor final estimado</div>
-            <div id="finalValue" class="text-3xl font-bold mt-1">—</div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200
-                        dark:bg-slate-950 dark:border-slate-800">
-              <div class="text-sm text-slate-600 dark:text-slate-300">Total investido</div>
-              <div id="totalInvested" class="text-xl font-semibold mt-1">—</div>
-            </div>
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200
-                        dark:bg-slate-950 dark:border-slate-800">
-              <div class="text-sm text-slate-600 dark:text-slate-300">Ganho (lucro)</div>
-              <div id="profit" class="text-xl font-semibold mt-1">—</div>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200
-                      dark:bg-slate-950 dark:border-slate-800">
-            <div class="text-sm text-slate-600 dark:text-slate-300">Taxa mensal equivalente</div>
-            <div id="monthlyRate" class="text-lg font-semibold mt-1">—</div>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-              Convertida a partir da taxa anual: (1 + Z)^(1/12) - 1
-            </p>
-          </div>
-
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200
-                      dark:bg-slate-950 dark:border-slate-800">
-            <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">Detalhe</div>
-            <div id="detail" class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
-              Introduz valores e clica em <b>Calcular</b>.
-            </div>
-          </div>
-        </div>
-      </section>
+  <!-- ==========================================
+       VIEW 1: DASHBOARD
+       ========================================== -->
+  <main id="tab-simulador" class="ios-view active">
+    
+    <div class="ios-large-title">
+      <h2>Painel Geral</h2>
+      <p>Simulador composto &amp; Projeção de Riqueza</p>
     </div>
 
-    <!-- Table -->
-    <section class="mt-6 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm
-                    dark:bg-slate-900/60 dark:border-slate-800">
-      <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
-        <h2 class="text-xl font-semibold">Evolução anual (aprox.)</h2>
-        <div class="text-xs text-slate-500 dark:text-slate-400">
-          Mostra o valor no fim de cada ano (com depósitos mensais)
+    <!-- Hero Compound Metrics Widget -->
+    <section class="ios-section">
+      <div class="ios-card ios-card-p ios-metrics-hero">
+        <span class="stat-label" style="color: rgba(255, 255, 255, 0.65);">Património Estimado</span>
+        <div id="finalValue" class="hero-value-large">—</div>
+        <p id="calcDetail" style="font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; line-height: 1.4;">
+          A simular património futuro...
+        </p>
+        
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <span class="stat-label">Capital Investido</span>
+            <span id="totalInvested" class="stat-value primary">—</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Retorno Líquido (Juros)</span>
+            <span id="profit" class="stat-value success">—</span>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
-        <table class="min-w-full text-sm">
-          <thead class="bg-slate-50 dark:bg-slate-950">
-            <tr class="text-left">
-              <th class="px-4 py-3 text-slate-600 dark:text-slate-300">Ano</th>
-              <th class="px-4 py-3 text-slate-600 dark:text-slate-300">Investido até aqui</th>
-              <th class="px-4 py-3 text-slate-600 dark:text-slate-300">Valor estimado</th>
-              <th class="px-4 py-3 text-slate-600 dark:text-slate-300">Ganho</th>
+    <!-- Interactive Inputs Controls Card -->
+    <section class="ios-section">
+      <div class="ios-section-title">Parâmetros de Investimento</div>
+      
+      <!-- Scenario Selector Switch -->
+      <div class="ios-segmented-control">
+        <button class="ios-segment-item" data-scenario="conservative">Conservador</button>
+        <button class="ios-segment-item active" data-scenario="moderate">Moderado</button>
+        <button class="ios-segment-item" data-scenario="aggressive">Agressivo</button>
+      </div>
+
+      <div class="ios-card">
+        <div class="ios-list">
+          
+          <!-- Initial Lump Sum -->
+          <div class="ios-row ios-slider-row">
+            <div class="ios-slider-header">
+              <span class="ios-row-label">Capital Inicial (Lump Sum)</span>
+              <div class="ios-row-value-container">
+                <input id="initial" type="number" min="0" max="10000000" step="500" value="10000" class="ios-input-premium" /> €
+              </div>
+            </div>
+            <input id="initialSlider" type="range" min="0" max="250000" step="1000" value="10000" class="ios-range-slider" />
+          </div>
+
+          <!-- Monthly Contribution -->
+          <div class="ios-row ios-slider-row">
+            <div class="ios-slider-header">
+              <span class="ios-row-label">Depósito Mensal</span>
+              <div class="ios-row-value-container">
+                <input id="monthly" type="number" min="0" max="1000000" step="50" value="250" class="ios-input-premium" /> €
+              </div>
+            </div>
+            <input id="monthlySlider" type="range" min="0" max="5000" step="50" value="250" class="ios-range-slider" />
+          </div>
+
+          <!-- Horizon (Years) -->
+          <div class="ios-row ios-slider-row">
+            <div class="ios-slider-header">
+              <span class="ios-row-label">Prazo de Projeção</span>
+              <div class="ios-row-value-container">
+                <input id="years" type="number" min="1" max="100" step="1" value="20" class="ios-input-premium" /> anos
+              </div>
+            </div>
+            <input id="yearsSlider" type="range" min="1" max="50" step="1" value="20" class="ios-range-slider" />
+          </div>
+
+          <!-- Return Rate -->
+          <div class="ios-row ios-slider-row">
+            <div class="ios-slider-header">
+              <span class="ios-row-label">Taxa Anual Esperada (Z)</span>
+              <div class="ios-row-value-container">
+                <input id="annualReturn" type="number" min="-50" max="50" step="0.1" value="8.5" class="ios-input-premium" /> %
+              </div>
+            </div>
+            <input id="annualSlider" type="range" min="-10" max="25" step="0.5" value="8.5" class="ios-range-slider" />
+          </div>
+
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 0 4px;">
+        <span id="monthlyRate" style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+          —
+        </span>
+        <button id="resetBtn" class="theme-btn" style="padding: 8px 16px;">Limpar Simulador</button>
+      </div>
+    </section>
+
+    <!-- Curve Graph Section -->
+    <section class="ios-section">
+      <div class="ios-section-title">Evolução Histórica Crescente</div>
+      <div class="ios-card ios-card-p">
+        <div class="chart-container-hd">
+          <canvas id="growthChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ios-footer-note">
+      Wealthiers &middot; Projeções matemáticas compostas. A performance passada do S&amp;P 500 ou qualquer índice não constitui garantia de retorno futuro.
+    </footer>
+  </main>
+
+
+  <!-- ==========================================
+       VIEW 3: DETALHES (TABELA)
+       ========================================== -->
+  <main id="tab-detalhes" class="ios-view">
+    
+    <div class="ios-large-title">
+      <h2>Histórico Anual</h2>
+      <p>Relatório completo de depósitos e capitalização</p>
+    </div>
+
+    <!-- Project Data Table -->
+    <section class="ios-section">
+      <div class="ios-section-title">Evolução do Saldo por Período</div>
+      <div class="table-scroll">
+        <table class="wealth-table">
+          <thead>
+            <tr>
+              <th>Período</th>
+              <th>Capital Investido</th>
+              <th>Saldo Acumulado</th>
+              <th class="text-right-aligned">Lucro Gerado</th>
             </tr>
           </thead>
-          <tbody id="yearTable" class="divide-y divide-slate-200 bg-white dark:divide-slate-800 dark:bg-slate-900">
-            <tr>
-              <td class="px-4 py-3 text-slate-500 dark:text-slate-400" colspan="4">—</td>
-            </tr>
+          <tbody id="yearTable">
+            <!-- Javascript dynamic table rows -->
           </tbody>
         </table>
       </div>
     </section>
 
-    <footer class="mt-8 text-xs text-slate-500 dark:text-slate-400">
-      Nota: simulação simples. Não inclui inflação, impostos, comissões, nem variação real do mercado.
+    <footer class="ios-footer-note">
+      Os saldos anuais consideram a capitalização de depósitos efetuados mensalmente no fim de cada ciclo.
     </footer>
-  </div>
+  </main>
 
-  <script>
-    // --- Theme toggle (localStorage) ---
-    const themeBtn = document.getElementById("themeToggle");
+  <!-- ==========================================
+       BOTTOM TAB BAR (iOS NAVIGATION)
+       ========================================== -->
+  <nav class="ios-tab-bar">
+    
+    <!-- Tab 1: Dashboard -->
+    <button class="ios-tab-item active" data-tab="tab-simulador" aria-label="Aba do Painel Geral">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+        <path d="M14 17h2v-7h-2v7zm-4 0h2V7h-2v10zm-4 0h2v-4H6v4z"/>
+      </svg>
+      <span>Dashboard</span>
+    </button>
+    
 
-    function setTheme(isDark) {
-      document.documentElement.classList.toggle("dark", isDark);
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      themeBtn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
-    }
+    <!-- Tab 3: Detalhes -->
+    <button class="ios-tab-item" data-tab="tab-detalhes" aria-label="Aba dos Detalhes">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+      </svg>
+      <span>Relatório</span>
+    </button>
+    
+  </nav>
 
-    // Inicializa tema (guardado ou sistema)
-    (function initTheme() {
-      const saved = localStorage.getItem("theme");
-      if (saved === "dark") return setTheme(true);
-      if (saved === "light") return setTheme(false);
-
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setTheme(prefersDark);
-    })();
-
-    themeBtn.addEventListener("click", () => {
-      const isDark = document.documentElement.classList.contains("dark");
-      setTheme(!isDark);
-    });
-
-    // --- Calculator ---
-    const elYears = document.getElementById("years");
-    const elMonthly = document.getElementById("monthly");
-    const elAnnual = document.getElementById("annualReturn");
-
-    const elFinal = document.getElementById("finalValue");
-    const elInvested = document.getElementById("totalInvested");
-    const elProfit = document.getElementById("profit");
-    const elMonthlyRate = document.getElementById("monthlyRate");
-    const elDetail = document.getElementById("detail");
-    const elYearTable = document.getElementById("yearTable");
-
-    const calcBtn = document.getElementById("calcBtn");
-    const resetBtn = document.getElementById("resetBtn");
-
-    const eur = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" });
-    const pct = (v) => (v * 100).toFixed(3) + "%";
-
-    function toMonthlyRate(annualPercent) {
-      const r = annualPercent / 100;
-      return Math.pow(1 + r, 1/12) - 1;
-    }
-
-    function simulate({ years, monthlyContribution, annualPercent }) {
-      const months = years * 12;
-      const mRate = toMonthlyRate(annualPercent);
-
-      let balance = 0;
-      let invested = 0;
-      const yearly = [];
-
-      for (let m = 1; m <= months; m++) {
-        balance *= (1 + mRate);       // crescimento
-        balance += monthlyContribution; // contribuição no fim do mês
-        invested += monthlyContribution;
-
-        if (m % 12 === 0) {
-          const year = m / 12;
-          yearly.push({ year, invested, balance, profit: balance - invested });
-        }
-      }
-
-      return { months, mRate, invested, balance, profit: balance - invested, yearly };
-    }
-
-    function renderTable(rows) {
-      if (!rows.length) {
-        elYearTable.innerHTML = `
-          <tr><td class="px-4 py-3 text-slate-500 dark:text-slate-400" colspan="4">—</td></tr>
-        `;
-        return;
-      }
-
-      elYearTable.innerHTML = rows.map(r => `
-        <tr class="hover:bg-slate-50 dark:hover:bg-slate-950/60 transition">
-          <td class="px-4 py-3 font-medium">${r.year}</td>
-          <td class="px-4 py-3">${eur.format(r.invested)}</td>
-          <td class="px-4 py-3">${eur.format(r.balance)}</td>
-          <td class="px-4 py-3">${eur.format(r.profit)}</td>
-        </tr>
-      `).join("");
-    }
-
-    function validateInputs(years, monthly, annual) {
-      if (!Number.isFinite(years) || years <= 0) return "Os anos têm de ser > 0.";
-      if (!Number.isFinite(monthly) || monthly < 0) return "O investimento mensal não pode ser negativo.";
-      if (!Number.isFinite(annual) || annual <= -100) return "A taxa anual tem de ser maior que -100%.";
-      if (years > 100) return "Por simplicidade, limita a simulação a 100 anos.";
-      return null;
-    }
-
-    function calculate() {
-      const years = Number(elYears.value);
-      const monthly = Number(elMonthly.value);
-      const annual = Number(elAnnual.value);
-
-      const err = validateInputs(years, monthly, annual);
-      if (err) {
-        elDetail.textContent = err;
-        elFinal.textContent = "—";
-        elInvested.textContent = "—";
-        elProfit.textContent = "—";
-        elMonthlyRate.textContent = "—";
-        renderTable([]);
-        return;
-      }
-
-      const res = simulate({ years, monthlyContribution: monthly, annualPercent: annual });
-
-      elFinal.textContent = eur.format(res.balance);
-      elInvested.textContent = eur.format(res.invested);
-      elProfit.textContent = eur.format(res.profit);
-      elMonthlyRate.textContent = `${pct(res.mRate)} / mês`;
-
-      elDetail.innerHTML = `
-        <div>
-          <b>${years}</b> anos (<b>${res.months}</b> meses) a investir <b>${eur.format(monthly)}</b>/mês,
-          com crescimento anual de <b>${annual}%</b>.
-        </div>
-        <div class="mt-2 text-slate-600 dark:text-slate-300">
-          Valor final estimado: <b>${eur.format(res.balance)}</b> —
-          Investido: <b>${eur.format(res.invested)}</b> —
-          Ganho: <b>${eur.format(res.profit)}</b>
-        </div>
-      `;
-
-      renderTable(res.yearly);
-    }
-
-    function reset() {
-      elYears.value = 20;
-      elMonthly.value = 200;
-      elAnnual.value = 8;
-
-      elFinal.textContent = "—";
-      elInvested.textContent = "—";
-      elProfit.textContent = "—";
-      elMonthlyRate.textContent = "—";
-      elDetail.innerHTML = `Introduz valores e clica em <b>Calcular</b>.`;
-      renderTable([]);
-
-      calculate();
-    }
-
-    calcBtn.addEventListener("click", calculate);
-    resetBtn.addEventListener("click", reset);
-
-    calculate();
-  </script>
 </body>
 </html>

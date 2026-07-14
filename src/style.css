@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode selector in Tailwind CSS v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Custom premium iOS-style sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #e5e5ea; /* iOS System Gray 6 */
+  height: 6px;
+  border-radius: 9999px;
+}
+
+.dark input[type="range"]::-webkit-slider-runnable-track {
+  background: #3a3a3c; /* iOS Dark System Gray 4 */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -5px;
+  background-color: #ffffff;
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+}
+
+.dark input[type="range"]::-webkit-slider-thumb {
+  background-color: #ffffff;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2), 0 3px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Hide scrollbar for horizontal containers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,220 +1,414 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
   
-  <title>Wealthiers - Premium Wealth Tracker</title>
+  <title>Wealthiers - Advanced Compound Interest Engine</title>
   
   <!-- PWA & Apple Web App Tags -->
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="/manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Wealthiers" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <meta name="theme-color" content="#09090b" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <meta name="theme-color" content="#f2f2f7" />
   
-  <!-- Google Fonts for Luxury Theme -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;950&display=swap" rel="stylesheet">
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css?v=10" />
-  
-  <!-- Chart.js HD -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- Application Logic -->
-  <script src="app.js?v=10" defer></script>
+  <!-- Main Stylesheet & JS Bundled by Vite -->
+  <link rel="stylesheet" href="/src/style.css" />
+  <script type="module" src="/src/main.js"></script>
 </head>
-<body>
+<body class="bg-[#f2f2f7] dark:bg-black text-black dark:text-white min-h-screen transition-colors duration-300 antialiased pb-24 md:pb-8">
 
-  <!-- Premium Top Sticky Bar -->
-  <header class="ios-header">
-    <div class="brand-wrapper">
-      <div class="brand-logo-small">W</div>
-      <span class="brand-text">Wealthiers</span>
+  <!-- Sticky Premium iOS-Style Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 px-4 py-3 md:px-8 flex justify-between items-center transition-colors">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center font-extrabold text-lg text-white shadow-lg shadow-indigo-500/20">W</div>
+      <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 to-violet-600 dark:from-indigo-400 dark:to-violet-500 bg-clip-text text-transparent">Wealthiers</span>
     </div>
-    <button id="themeToggle" class="theme-btn">🌙 Escuro</button>
+    <div class="flex items-center gap-2">
+      <button id="langToggle" class="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-[#2c2c2e] dark:hover:bg-[#3a3a3c] text-xs font-bold text-slate-800 dark:text-slate-200 transition duration-150 flex items-center gap-1.5">
+        <img src="https://flagcdn.com/w20/pt.png" class="w-4 h-2.5 rounded-2xs object-cover shadow-sm" alt="PT">
+        <span>PT</span>
+      </button>
+      <button id="themeToggle" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-[#2c2c2e] dark:hover:bg-[#3a3a3c] text-xs font-bold text-slate-800 dark:text-slate-200 transition duration-150 flex items-center gap-1.5">
+        🌙 Dark
+      </button>
+    </div>
   </header>
 
   <!-- ==========================================
-       VIEW 1: DASHBOARD
+       VIEW 1: SIMULATOR (DASHBOARD)
        ========================================== -->
-  <main id="tab-simulador" class="ios-view active">
+  <main id="tab-simulador" class="tab-view max-w-7xl mx-auto px-4 md:px-8 py-6 grid grid-cols-12 gap-6">
     
-    <div class="ios-large-title">
-      <h2>Painel Geral</h2>
-      <p>Simulador composto &amp; Projeção de Riqueza</p>
+    <!-- Title Section -->
+    <div class="col-span-12 mb-2">
+      <h1 data-i18n="app_title" class="text-3xl font-extrabold tracking-tight md:text-4xl text-black dark:text-white">Compound Interest Engine</h1>
+      <p data-i18n="app_subtitle" class="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">Advanced projection tool factoring inflation, tax liabilities, and targets.</p>
     </div>
 
-    <!-- Hero Compound Metrics Widget -->
-    <section class="ios-section">
-      <div class="ios-card ios-card-p ios-metrics-hero">
-        <span class="stat-label" style="color: rgba(255, 255, 255, 0.65);">Património Estimado</span>
-        <div id="finalValue" class="hero-value-large">—</div>
-        <p id="calcDetail" style="font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; line-height: 1.4;">
-          A simular património futuro...
-        </p>
+    <!-- LEFT PANEL: Parameters & Controls -->
+    <section class="col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+      
+      <!-- Mode Selector -->
+      <div class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm">
+        <h2 data-i18n="mode_header" class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Calculator Mode</h2>
+        <div class="grid grid-cols-2 gap-2 bg-[#e5e5ea] dark:bg-[#2c2c2e] p-1 rounded-xl">
+          <button id="modeBasicBtn" data-i18n="mode_basic" class="py-2 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-350 transition duration-150">Basic</button>
+          <button id="modeComplexBtn" data-i18n="mode_advanced" class="py-2 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-350 transition duration-150">Advanced</button>
+        </div>
+      </div>
+
+      <!-- Primary Presets Selector -->
+      <div class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm">
+        <h2 data-i18n="scenarios_header" class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Market Scenarios</h2>
+        <div class="grid grid-cols-3 gap-2 bg-[#e5e5ea] dark:bg-[#2c2c2e] p-1 rounded-xl">
+          <button data-i18n="scenario_conser" class="scenario-preset py-2 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-350 hover:text-indigo-500 transition duration-150 active" data-scenario="conservative">Conser. (5%)</button>
+          <button data-i18n="scenario_moder" class="scenario-preset py-2 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-350 hover:text-indigo-500 transition duration-150" data-scenario="moderate">Moder. (8.5%)</button>
+          <button data-i18n="scenario_agres" class="scenario-preset py-2 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-350 hover:text-indigo-500 transition duration-150" data-scenario="aggressive">Agres. (12%)</button>
+        </div>
+      </div>
+
+      <!-- Core Sliders Card -->
+      <div class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-5 shadow-sm flex flex-col gap-5">
+        <h2 data-i18n="core_params_header" class="text-sm font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800/40 pb-2">Core Parameters</h2>
         
-        <div class="hero-stats-row">
-          <div class="stat-item">
-            <span class="stat-label">Capital Investido</span>
-            <span id="totalInvested" class="stat-value primary">—</span>
+        <!-- Initial Sum -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span data-i18n="initial_capital_label" class="text-slate-600 dark:text-slate-400">Initial Capital</span>
+            <div class="flex items-center gap-1">
+              <input id="initial" type="number" min="0" max="10000000" step="500" value="10000" class="w-24 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span class="text-slate-400">€</span>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="stat-label">Retorno Líquido (Juros)</span>
-            <span id="profit" class="stat-value success">—</span>
+          <input id="initialSlider" type="range" min="0" max="250000" step="1000" value="10000" class="w-full h-1.5" />
+        </div>
+
+        <!-- Monthly Contributions -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span data-i18n="monthly_deposit_label" class="text-slate-600 dark:text-slate-400">Monthly Deposit</span>
+            <div class="flex items-center gap-1">
+              <input id="monthly" type="number" min="0" max="1000000" step="50" value="250" class="w-24 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span class="text-slate-400">€</span>
+            </div>
+          </div>
+          <input id="monthlySlider" type="range" min="0" max="5000" step="50" value="250" class="w-full h-1.5" />
+        </div>
+
+        <!-- Horizon (Years) -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span data-i18n="horizon_label" class="text-slate-600 dark:text-slate-400">Horizon</span>
+            <div class="flex items-center gap-1">
+              <input id="years" type="number" min="1" max="100" step="1" value="20" class="w-16 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span data-i18n="years_unit" class="text-slate-400 text-xs">years</span>
+            </div>
+          </div>
+          <input id="yearsSlider" type="range" min="1" max="50" step="1" value="20" class="w-full h-1.5" />
+        </div>
+
+        <!-- Return Rate -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span data-i18n="annual_return_label" class="text-slate-600 dark:text-slate-400">Expected Annual Return (Nominal)</span>
+            <div class="flex items-center gap-1">
+              <input id="annualReturn" type="number" min="-50" max="50" step="0.1" value="5.0" class="w-16 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span class="text-slate-400">%</span>
+            </div>
+          </div>
+          <input id="annualSlider" type="range" min="-10" max="25" step="0.5" value="5.0" class="w-full h-1.5" />
+        </div>
+      </div>
+
+      <!-- Advanced Fiscal / Inflation Parameters -->
+      <div id="fiscalInflationCard" class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-5 shadow-sm flex flex-col gap-5">
+        <h2 data-i18n="adjustments_header" class="text-sm font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800/40 pb-2">Fiscal &amp; Inflation Adjustments</h2>
+
+        <!-- Inflation Rate Slider -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span class="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+              <span data-i18n="inflation_label">Average Annual Inflation</span>
+              <span class="group relative cursor-pointer text-slate-400 text-xs font-bold">(?)
+                <span data-i18n="inflation_tooltip" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 hidden group-hover:block bg-slate-900 dark:bg-slate-950 text-white text-xs font-normal rounded-lg p-2 shadow-xl z-20 border border-slate-700/30">Subtracts the impact of inflation to estimate real future purchasing power.</span>
+              </span>
+            </span>
+            <div class="flex items-center gap-1">
+              <input id="inflationRate" type="number" min="0" max="20" step="0.1" value="2.0" class="w-16 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span class="text-slate-400">%</span>
+            </div>
+          </div>
+          <input id="inflationSlider" type="range" min="0" max="15" step="0.1" value="2.0" class="w-full h-1.5" />
+        </div>
+
+        <!-- Capital Gains Tax -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span class="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+              <span data-i18n="tax_label">Capital Gains Tax</span>
+              <span class="group relative cursor-pointer text-slate-400 text-xs font-bold">(?)
+                <span data-i18n="tax_tooltip" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 hidden group-hover:block bg-slate-900 dark:bg-slate-950 text-white text-xs font-normal rounded-lg p-2 shadow-xl z-20 border border-slate-700/30">Estimated tax liability deducted from profits at simulated liquidation (e.g. IRS in PT is 28%).</span>
+              </span>
+            </span>
+            <div class="flex items-center gap-1">
+              <input id="taxRate" type="number" min="0" max="100" step="1" value="28" class="w-16 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span class="text-slate-400">%</span>
+            </div>
+          </div>
+          <div class="flex gap-2 items-center">
+            <input id="taxSlider" type="range" min="0" max="50" step="1" value="28" class="flex-1 h-1.5" />
+            <button id="setPtTax" data-i18n="set_pt_tax_btn" class="px-2 py-0.5 text-2xs font-bold rounded bg-slate-100 dark:bg-[#2c2c2e] hover:bg-slate-200 dark:hover:bg-[#3a3a3c] text-slate-500 hover:text-indigo-500 border border-slate-250 dark:border-slate-800">PT (28%)</button>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Interactive Inputs Controls Card -->
-    <section class="ios-section">
-      <div class="ios-section-title">Parâmetros de Investimento</div>
-      
-      <!-- Scenario Selector Switch -->
-      <div class="ios-segmented-control">
-        <button class="ios-segment-item" data-scenario="conservative">Conservador</button>
-        <button class="ios-segment-item active" data-scenario="moderate">Moderado</button>
-        <button class="ios-segment-item" data-scenario="aggressive">Agressivo</button>
-      </div>
-
-      <div class="ios-card">
-        <div class="ios-list">
-          
-          <!-- Initial Lump Sum -->
-          <div class="ios-row ios-slider-row">
-            <div class="ios-slider-header">
-              <span class="ios-row-label">Capital Inicial (Lump Sum)</span>
-              <div class="ios-row-value-container">
-                <input id="initial" type="number" min="0" max="10000000" step="500" value="10000" class="ios-input-premium" /> €
-              </div>
+      <!-- Milestone Definition -->
+      <div id="milestoneGoalCard" class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-5 shadow-sm flex flex-col gap-5">
+        <h2 data-i18n="milestone_goal_header" class="text-sm font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800/40 pb-2">Milestone / FIRE Goal</h2>
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-sm font-semibold">
+            <span data-i18n="target_milestone_label" class="text-slate-600 dark:text-slate-400">Target Wealth</span>
+            <div class="flex items-center gap-1">
+              <input id="targetMilestone" type="number" min="0" max="100000000" step="10000" value="250000" class="w-32 text-right bg-[#f2f2f7] dark:bg-black border border-slate-200/80 dark:border-slate-800/85 px-2 py-0.5 rounded text-indigo-500 font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <span class="text-slate-400">€</span>
             </div>
-            <input id="initialSlider" type="range" min="0" max="250000" step="1000" value="10000" class="ios-range-slider" />
           </div>
-
-          <!-- Monthly Contribution -->
-          <div class="ios-row ios-slider-row">
-            <div class="ios-slider-header">
-              <span class="ios-row-label">Depósito Mensal</span>
-              <div class="ios-row-value-container">
-                <input id="monthly" type="number" min="0" max="1000000" step="50" value="250" class="ios-input-premium" /> €
-              </div>
-            </div>
-            <input id="monthlySlider" type="range" min="0" max="5000" step="50" value="250" class="ios-range-slider" />
-          </div>
-
-          <!-- Horizon (Years) -->
-          <div class="ios-row ios-slider-row">
-            <div class="ios-slider-header">
-              <span class="ios-row-label">Prazo de Projeção</span>
-              <div class="ios-row-value-container">
-                <input id="years" type="number" min="1" max="100" step="1" value="20" class="ios-input-premium" /> anos
-              </div>
-            </div>
-            <input id="yearsSlider" type="range" min="1" max="50" step="1" value="20" class="ios-range-slider" />
-          </div>
-
-          <!-- Return Rate -->
-          <div class="ios-row ios-slider-row">
-            <div class="ios-slider-header">
-              <span class="ios-row-label">Taxa Anual Esperada (Z)</span>
-              <div class="ios-row-value-container">
-                <input id="annualReturn" type="number" min="-50" max="50" step="0.1" value="8.5" class="ios-input-premium" /> %
-              </div>
-            </div>
-            <input id="annualSlider" type="range" min="-10" max="25" step="0.5" value="8.5" class="ios-range-slider" />
-          </div>
-
+          <input id="targetSlider" type="range" min="10000" max="2000000" step="10000" value="250000" class="w-full h-1.5" />
         </div>
       </div>
-      
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 0 4px;">
-        <span id="monthlyRate" style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
-          —
-        </span>
-        <button id="resetBtn" class="theme-btn" style="padding: 8px 16px;">Limpar Simulador</button>
+
+      <!-- Reset -->
+      <div class="flex gap-2">
+        <button id="resetBtn" data-i18n="reset_btn" class="flex-1 py-3 text-xs font-bold rounded-xl bg-white hover:bg-slate-100 dark:bg-[#1c1c1e] dark:hover:bg-[#2c2c2e] text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-800/50 transition duration-150 shadow-sm">
+          Reset Parameters
+        </button>
       </div>
+
     </section>
 
-    <!-- Curve Graph Section -->
-    <section class="ios-section">
-      <div class="ios-section-title">Evolução Histórica Crescente</div>
-      <div class="ios-card ios-card-p">
-        <div class="chart-container-hd">
+    <!-- RIGHT PANEL: Graphs, Metrics & Dynamic UI Panels -->
+    <section class="col-span-12 lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+
+      <!-- Hero Key Metrics Board -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Metric 1: Nominal Gross (Main highlight, stretches dynamically) -->
+        <div id="finalCard" class="col-span-2 bg-gradient-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 rounded-2xl p-5 text-white shadow-md relative overflow-hidden flex flex-col justify-between min-h-[9rem] transition-all duration-300">
+          <div class="flex flex-col">
+            <span data-i18n="final_balance_label" class="text-xs font-bold text-indigo-100/80 uppercase tracking-wider">Estimated Final Balance</span>
+            <div id="finalValue" class="text-3xl font-extrabold tracking-tight mt-1 truncate">—</div>
+          </div>
+          <p id="calcDetail" class="text-indigo-200/90 text-2xs leading-normal line-clamp-2">
+            Simulating wealth projection...
+          </p>
+          <!-- Subtle decoration -->
+          <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/5 rounded-full blur-xl pointer-events-none"></div>
+        </div>
+
+        <!-- Metric 2: Net Nominal (Post-tax) -->
+        <div id="netFinalCard" class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm flex flex-col justify-between min-h-[9rem]">
+          <div>
+            <span data-i18n="net_balance_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Net Balance (Post-Tax)</span>
+            <div id="netFinalValue" class="text-xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-slate-100 truncate">—</div>
+          </div>
+          <div class="text-2xs text-slate-500 dark:text-slate-400">
+            <span data-i18n="tax_paid_label">Taxes withheld:</span> <span id="taxPaid" class="font-bold text-red-500">—</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Real Net (Inflation adjusted) -->
+        <div id="realFinalCard" class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm flex flex-col justify-between min-h-[9rem]">
+          <div>
+            <span data-i18n="real_balance_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Real Purchasing Power</span>
+            <div id="realFinalValue" class="text-xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-slate-100 truncate">—</div>
+          </div>
+          <div class="text-2xs text-slate-500 dark:text-slate-400">
+            <span data-i18n="inflation_loss_label">Inflation loss:</span> <span id="inflationLoss" class="font-bold text-amber-500">—</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Secondary metrics row -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Capital Invested -->
+        <div class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm">
+          <span data-i18n="total_invested_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Total Invested Capital</span>
+          <span id="totalInvested" class="text-lg font-bold text-slate-900 dark:text-slate-100 mt-0.5 block">—</span>
+        </div>
+        <!-- Return Generated -->
+        <div class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm">
+          <span data-i18n="gross_interest_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Gross Interest Earned</span>
+          <span id="profit" class="text-lg font-bold text-emerald-500 mt-0.5 block">—</span>
+        </div>
+        <!-- Monthly rate info -->
+        <div class="col-span-2 md:col-span-1 bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm">
+          <span data-i18n="monthly_rate_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Monthly Return rate</span>
+          <span id="monthlyRate" class="text-lg font-bold text-indigo-500 mt-0.5 block">—</span>
+        </div>
+      </div>
+
+      <!-- Chart Container Card -->
+      <div class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-5 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+          <h2 data-i18n="chart_title" class="text-sm font-bold text-slate-800 dark:text-slate-200">Growth Projections &amp; Wealth Curves</h2>
+          <div class="flex items-center gap-1.5 bg-[#f2f2f7] dark:bg-black border border-slate-200/60 dark:border-slate-800/80 px-2.5 py-1 rounded-lg text-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 inline-block"></span>
+            <span id="chartLegendText" class="font-semibold text-slate-500 dark:text-slate-400">Normal Projection Mode</span>
+          </div>
+        </div>
+        <div class="relative w-full h-[320px] md:h-[380px]">
           <canvas id="growthChart"></canvas>
         </div>
       </div>
+
+      <!-- Milestone Progress & FIRE Details Panel -->
+      <div id="milestoneCard" class="bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800/40 pb-2">
+          <h2 data-i18n="milestone_tracker_header" class="text-sm font-bold text-slate-800 dark:text-slate-200">Milestone Progress Tracker</h2>
+          <span id="milestoneTargetBadge" class="px-2 py-0.5 rounded-full text-3xs font-extrabold uppercase bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-250 dark:border-emerald-900/60">
+            Target: 250k €
+          </span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          
+          <!-- Column 1: Time to reach -->
+          <div class="flex flex-col">
+            <span data-i18n="milestone_time_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Estimated Time</span>
+            <span id="milestoneTime" class="text-lg font-extrabold text-indigo-500 mt-0.5">—</span>
+            <span class="text-3xs text-slate-500 dark:text-slate-400 mt-0.5" id="milestoneShortDate">—</span>
+          </div>
+          
+          <!-- Column 2: Progress Bar -->
+          <div class="flex flex-col">
+            <div class="flex justify-between items-center text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">
+              <span data-i18n="milestone_progress_label">Progress</span>
+              <span id="milestonePercentage" class="text-indigo-500 font-mono">0%</span>
+            </div>
+            <div class="w-full h-2.5 bg-[#f2f2f7] dark:bg-black rounded-full overflow-hidden border border-slate-200/60 dark:border-slate-800">
+              <div id="milestoneProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 w-0 transition-all duration-500"></div>
+            </div>
+          </div>
+
+          <!-- Column 3: Fire income equivalent -->
+          <div class="flex flex-col">
+            <span data-i18n="passive_income_label" class="text-2xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Estimated Passive Income</span>
+            <span id="milestonePassiveIncome" class="text-lg font-extrabold text-emerald-500 mt-0.5">—</span>
+            <span data-i18n="passive_income_sub" class="text-3xs text-slate-500 dark:text-slate-400 mt-0.5">(4% Rule on Nominal Balance)</span>
+          </div>
+
+        </div>
+      </div>
+
+
+
     </section>
 
-    <footer class="ios-footer-note">
-      Wealthiers &middot; Projeções matemáticas compostas. A performance passada do S&amp;P 500 ou qualquer índice não constitui garantia de retorno futuro.
-    </footer>
   </main>
 
 
   <!-- ==========================================
-       VIEW 3: DETALHES (TABELA)
+       VIEW 2: RELATÓRIO (ANNUAL TABLE)
        ========================================== -->
-  <main id="tab-detalhes" class="ios-view">
+  <main id="tab-detalhes" class="tab-view max-w-7xl mx-auto px-4 md:px-8 py-6 hidden grid-cols-1 gap-6">
     
-    <div class="ios-large-title">
-      <h2>Histórico Anual</h2>
-      <p>Relatório completo de depósitos e capitalização</p>
+    <!-- Title Section -->
+    <div class="mb-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h1 data-i18n="table_title" class="text-3xl font-extrabold tracking-tight text-black dark:text-white">Capitalization History</h1>
+        <p data-i18n="table_sub" class="text-slate-500 dark:text-slate-400 mt-1 text-sm">Detailed year-by-year report adjusted for taxes and cumulative inflation loss.</p>
+      </div>
+      <button id="downloadCsvBtn" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-[#1c1c1e] dark:hover:bg-[#2c2c2e] text-xs font-extrabold text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800/60 hover:text-indigo-500 dark:hover:text-indigo-400 transition flex items-center gap-2 shadow-sm">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-currentColor">
+          <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/>
+        </svg>
+        <span data-i18n="download_csv_btn">Download CSV (Excel)</span>
+      </button>
     </div>
 
-    <!-- Project Data Table -->
-    <section class="ios-section">
-      <div class="ios-section-title">Evolução do Saldo por Período</div>
-      <div class="table-scroll">
-        <table class="wealth-table">
-          <thead>
+    <!-- Desktop Table View (hidden on mobile) -->
+    <div class="hidden md:block bg-white dark:bg-[#1c1c1e] border border-slate-200/60 dark:border-slate-800/50 rounded-2xl overflow-hidden shadow-sm">
+      <div class="overflow-x-auto no-scrollbar">
+        <table class="w-full min-w-[900px] border-collapse text-left text-sm text-slate-500 dark:text-slate-400">
+          <thead class="bg-[#f2f2f7] dark:bg-black text-slate-450 dark:text-slate-500 text-3xs font-extrabold uppercase tracking-wider border-b border-slate-250/20 dark:border-slate-850/30">
             <tr>
-              <th>Período</th>
-              <th>Capital Investido</th>
-              <th>Saldo Acumulado</th>
-              <th class="text-right-aligned">Lucro Gerado</th>
+              <th scope="col" data-i18n="th_period" class="px-6 py-4">Period</th>
+              <th scope="col" data-i18n="th_invested" class="px-6 py-4">Capital Invested</th>
+              <th scope="col" data-i18n="th_gross" class="px-6 py-4">Gross Balance (Nominal)</th>
+              <th scope="col" id="thNet" data-i18n="th_net" class="px-6 py-4">Net Balance (Post-Tax)</th>
+              <th scope="col" id="thReal" data-i18n="th_real" class="px-6 py-4">Real Value (Post-Tax + Inf.)</th>
+              <th scope="col" data-i18n="th_passive" class="px-6 py-4">Est. Passive Income</th>
+              <th scope="col" data-i18n="th_profit" class="px-6 py-4 text-right">Cumulative Gross Profit</th>
             </tr>
           </thead>
-          <tbody id="yearTable">
-            <!-- Javascript dynamic table rows -->
+          <tbody id="yearTable" class="divide-y divide-slate-100 dark:divide-slate-800/40 font-medium">
+            <!-- Dynamically populated via JS -->
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <footer class="ios-footer-note">
-      Os saldos anuais consideram a capitalização de depósitos efetuados mensalmente no fim de cada ciclo.
-    </footer>
+    <!-- Mobile Card View (hidden on desktop) -->
+    <div id="yearCardsContainer" class="block md:hidden flex flex-col gap-4">
+      <!-- Dynamically populated via JS -->
+    </div>
+
+    <p data-i18n="table_note" class="text-3xs text-slate-400 dark:text-slate-500 text-center leading-relaxed max-w-lg mx-auto">
+      Note: Annual calculations compound monthly deposits at the end of each cycle. Tax is deferred and only applied on absolute gains at realization. Inflation discounts future purchasing power by cumulative timeline.
+    </p>
+
   </main>
+
 
   <!-- ==========================================
        BOTTOM TAB BAR (iOS NAVIGATION)
        ========================================== -->
-  <nav class="ios-tab-bar">
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-lg border-t border-slate-200/60 dark:border-slate-800/60 px-6 py-2 pb-safe flex justify-around md:hidden shadow-lg">
     
     <!-- Tab 1: Dashboard -->
-    <button class="ios-tab-item active" data-tab="tab-simulador" aria-label="Aba do Painel Geral">
-      <svg viewBox="0 0 24 24">
-        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-        <path d="M14 17h2v-7h-2v7zm-4 0h2V7h-2v10zm-4 0h2v-4H6v4z"/>
+    <button class="tab-item flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-500 transition duration-150 py-1 font-bold text-3xs active" data-tab="tab-simulador">
+      <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+        <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+        <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+        <rect x="3" y="16" width="7" height="5" rx="1"></rect>
       </svg>
-      <span>Dashboard</span>
+      <span data-i18n="tab_nav_dash">Dashboard</span>
     </button>
     
-
-    <!-- Tab 3: Detalhes -->
-    <button class="ios-tab-item" data-tab="tab-detalhes" aria-label="Aba dos Detalhes">
-      <svg viewBox="0 0 24 24">
-        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+    <!-- Tab 2: Report -->
+    <button class="tab-item flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-500 transition duration-150 py-1 font-bold text-3xs" data-tab="tab-detalhes">
+      <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="9" y1="6" x2="20" y2="6"></line>
+        <line x1="9" y1="12" x2="20" y2="12"></line>
+        <line x1="9" y1="18" x2="20" y2="18"></line>
+        <circle cx="5" cy="6" r="1"></circle>
+        <circle cx="5" cy="12" r="1"></circle>
+        <circle cx="5" cy="18" r="1"></circle>
       </svg>
-      <span>Relatório</span>
+      <span data-i18n="tab_nav_history">History</span>
     </button>
     
   </nav>
+
+  <!-- Large Screen Tab bar -->
+  <div class="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 dark:bg-[#1c1c1e]/90 border border-slate-200/60 dark:border-slate-800/60 shadow-2xl p-1.5 rounded-full z-45 items-center gap-1.5 backdrop-blur-xl">
+    <button data-i18n="tab_calc" class="tab-item px-5 py-2 rounded-full text-xs font-bold transition duration-150 hover:bg-slate-50 dark:hover:bg-[#2c2c2e] text-slate-550 dark:text-slate-400 hover:text-indigo-500 active" data-tab="tab-simulador">
+      Simulator Dashboard
+    </button>
+    <button data-i18n="tab_history" class="tab-item px-5 py-2 rounded-full text-xs font-bold transition duration-150 hover:bg-slate-50 dark:hover:bg-[#2c2c2e] text-slate-550 dark:text-slate-400 hover:text-indigo-500" data-tab="tab-detalhes">
+      Annual Report
+    </button>
+  </div>
 
 </body>
 </html>

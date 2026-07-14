@@ -1,11 +1,11 @@
 {
   "name": "Wealthiers - Premium Wealth Tracker",
   "short_name": "Wealthiers",
-  "description": "Dashboard premium de simulação de juros compostos, metas financeiras e planeamento de riqueza a longo prazo.",
-  "start_url": "./index.html",
+  "description": "Premium dashboard for compound interest simulation, scenario comparison, and wealth projections.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#09090b",
-  "theme_color": "#10b981",
+  "theme_color": "#6366f1",
   "orientation": "portrait",
   "categories": ["finance", "utilities"],
   "icons": [
